@@ -35,6 +35,7 @@ module.exports = {
   WalletTokenEndpoints: require('./src/wallet-token-endpoints'),
   WalletNetwork: require('./src/wallet-network'),
   RNG: require('./src/rng'),
+  Payload: require('./src/payload'),
   // Wallet: require('./blockchain-wallet'),
   Address: require('./src/address')
   // HDAccount: require('./hd-account'),
