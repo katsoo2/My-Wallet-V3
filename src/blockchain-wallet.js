@@ -548,6 +548,7 @@ Wallet.prototype.validateSecondPassword = function (inputString) {
 };
 
 Wallet.prototype.encrypt = function (pw, success, error, encrypting, syncing) {
+  success = success || function () {};
   encrypting && encrypting();
   try {
     if (!this.isDoubleEncrypted) {
@@ -571,15 +572,14 @@ Wallet.prototype.encrypt = function (pw, success, error, encrypting, syncing) {
   this.keys.forEach(p);
   this._hd_wallets.forEach(p);
   syncing && syncing();
-  if (success) {
-    MyWallet.syncWallet(success.bind(undefined, this));
-  } else {
-    MyWallet.syncWallet();
-  }
+  new Promise(MyWallet.syncWallet)
+    .then(this.loadExternal.bind(this))
+    .then(success.bind(undefined, this), error);
   return this;
 };
 
 Wallet.prototype.decrypt = function (pw, success, error, decrypting, syncing) {
+  success = success || function () {};
   decrypting && decrypting();
   try {
     if (this.isDoubleEncrypted) {
@@ -603,11 +603,9 @@ Wallet.prototype.decrypt = function (pw, success, error, decrypting, syncing) {
   this.keys.forEach(p);
   this._hd_wallets.forEach(p);
   syncing && syncing();
-  if (success) {
-    MyWallet.syncWallet(success.bind(undefined, this));
-  } else {
-    MyWallet.syncWallet();
-  }
+  new Promise(MyWallet.syncWallet)
+    .then(this.loadExternal.bind(this))
+    .then(success.bind(undefined, this), error);
   return this;
 };
 
